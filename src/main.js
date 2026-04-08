@@ -7,7 +7,7 @@ const axios = require('axios');
 const { execFile } = require('child_process');
 const sdkLogger = require('./sdk-logger');
 const { analyzeDiscoveryCoverage, shouldNudge } = require('./discovery-agent');
-const { sendNudge, sendFinalReport } = require('./slack-notifier');
+// Slack notifier removed -- replace with in-app notification if needed
 require('dotenv').config();
 
 // Call Claude via CLI (claude -p). Uses Max subscription, no API key needed.
@@ -597,7 +597,7 @@ async function initSDK() {
 
             // Send final report via Slack
             const meetingTitle = meeting.title || 'Untitled Meeting';
-            await sendFinalReport(finalAnalysis, meetingTitle, durationMinutes);
+            await console.log('[Discovery] Final report ready. Deal readiness: ' + (finalAnalysis.deal_readiness_pct || 0) + '%');
             console.log(`[Discovery] Final report sent. Brief readiness: ${finalAnalysis.brief_readiness_pct}%`);
           }
         }
