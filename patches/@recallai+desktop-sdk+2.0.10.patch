@@ -1,0 +1,23 @@
+diff --git a/node_modules/@recallai/desktop-sdk/index.js b/node_modules/@recallai/desktop-sdk/index.js
+index 3d2c380..4395d4b 100644
+--- a/node_modules/@recallai/desktop-sdk/index.js
++++ b/node_modules/@recallai/desktop-sdk/index.js
+@@ -447,6 +447,7 @@ function startProcess() {
+             // "DYLD_FORCE_FLAT_NAMESPACE":"1",
+             // MallocStackLogging: "1",
+             // MallocStackLoggingNoCompact: "1",
++            ...process.env,
+             ...envExtra,
+         }
+     });
+@@ -499,9 +500,7 @@ function startProcess() {
+     rlStdout.on('line', onLine);
+     rlStderr.on('line', (line) => {
+         appendError(line);
+-        if (process.env.RECALLAI_DESKTOP_SDK_DEV) {
+-            console.error(line);
+-        }
++        console.error("[SDK-NATIVE]", line);
+     });
+     proc.on('error', (error) => {
+         if (proc !== currentProc) {
