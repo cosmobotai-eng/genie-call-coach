@@ -276,8 +276,10 @@ async function runDemo() {
     });
     logToConsole(uiState);
     
-    // Run analysis every 90 seconds
-    if (elapsedMs - lastAnalysisMs >= ANALYSIS_INTERVAL_MS) {
+    // Run analysis every 9 seconds at 10x speed (90 real seconds compressed)
+    const analysisIntervalDemo = Math.floor(ANALYSIS_INTERVAL_MS / 1000 / speed);
+    const elapsedSec = Math.floor(elapsedMs / 1000);
+    if (elapsedSec - Math.floor(lastAnalysisMs / 1000) >= analysisIntervalDemo) {
       lastAnalysisMs = elapsedMs;
       
       console.log(`\n  🔍 Running analysis at ${Math.floor(elapsedMs / 60000)}:${String(Math.floor((elapsedMs % 60000) / 1000)).padStart(2, '0')}...`);
