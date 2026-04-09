@@ -1,7 +1,7 @@
 {
   "phase": "live",
   "meetingTitle": "Jordan Chen — TechFlow Discovery Call",
-  "elapsedMs": 24703,
+  "elapsedMs": 27719,
   "transcript": [
     {
       "id": 1,
@@ -90,49 +90,55 @@
       "isHost": true,
       "email": "jordan.chen@techflow.io",
       "timestamp": "06:23:20",
-      "text": "Honestly, at first I just wanted to fix the Salesforce problem. But the more I looked into it, the more I realized the real issue is that we have data everywhere and no",
-      "duration": 1703
+      "text": "Honestly, at first I just wanted to fix the Salesforce problem. But the more I looked into it, the more I realized the real issue is that we have data everywhere and no one knows what's true. We have three different places where customer data lives. I want one source of truth.",
+      "duration": 2800
+    },
+    {
+      "id": 10,
+      "speaker": "Alex",
+      "speakerId": 1,
+      "isHost": false,
+      "email": null,
+      "timestamp": "07:10:00",
+      "text": "That's a much more powerful vision. One source of truth changes how decisions get made. So when you say you want to get there — what's your timeline? Are you under pressure to solve this by end of quarter, or is this more of a H1",
+      "duration": 1919
     }
   ],
   "analysis": {
-    "overall_score": 5,
+    "overall_score": 7,
     "coverage": {
       "current_reality": {
         "score": 3,
-        "evidence": "Ops team of 6, 2 dedicated to data entry, 15 hrs/wk backlog, 3 data sources with no single source of truth."
+        "evidence": "Ops team 6 people, 2 doing data entry, Salesforce+Slack+ERP, 3 data sources, \"one source of truth\" vision."
       },
       "pain_points": {
         "score": 3,
-        "evidence": "Revenue loss from onboarding lag, board deck delays, hiring to solve process problem."
+        "evidence": "$0 revenue lost from 2-week onboarding lag, board deck always late, hiring 2 people for repetitive work."
       },
       "decision_process": {
-        "score": 2,
-        "evidence": "Jordan is recommendation + budget authority, CFO needs ROI proof."
+        "score": 3,
+        "evidence": "Jordan recommendation + budget authority, CFO needs ROI proof, ops leads involved in Thursday deep dive."
       },
       "budget_authority": {
-        "score": 2,
-        "evidence": "CFO skeptical of tools that create more work. No specific budget yet but pressure exists."
+        "score": 3,
+        "evidence": "CFO asking questions, hiring cost as baseline, Q2 pressure. Jordan has authority but needs ROI case."
       },
       "stakes": {
         "score": 3,
-        "evidence": "Q2 POC target, two salaries as operational cost, lost revenue from data gaps."
+        "evidence": "Q2 POC goal, CFO pressure, hiring costs, lost revenue. \"Results in weeks not quarters\" is the bar."
       },
       "competition": {
         "score": 3,
-        "evidence": "Zapier outgrown, Workato too expensive. No current vendor. \"Build it yourself\" framing resonates."
+        "evidence": "Zapier outgrown, Workato too expensive, DataSync referral, \"build it yourself\" resonates."
       },
       "next_steps": {
-        "score": 1,
-        "evidence": "Thursday 2pm PT technical deep dive scheduled with ops leads."
+        "score": 3,
+        "evidence": "Thursday 2pm PT deep dive with ops leads. Jordan's hesitation: implementation speed."
       }
     },
-    "nudge": {
-      "category": "next_steps",
-      "message": "\"What would the ops team's first week with us look like?\"",
-      "rationale": "Jordan's concern is implementation time. Concrete timeline details will help close the CFO ROI question."
-    },
-    "pyramid_layer": 3,
-    "brief_readiness_pct": 62
+    "nudge": null,
+    "pyramid_layer": 4,
+    "brief_readiness_pct": 88
   },
   "nudgeHistory": [
     {
@@ -146,56 +152,52 @@
       "rationale": "Jordan's concern is implementation time. Concrete timeline details will help close the CFO ROI question."
     }
   ],
-  "overallScore": 5,
+  "overallScore": 7,
   "categories": {
     "current_reality": {
       "name": "Current Reality",
       "weight": 1,
       "score": 3,
-      "evidence": "Ops team of 6, 2 dedicated to data entry, 15 hrs/wk backlog, 3 data sources with no single source of truth."
+      "evidence": "Ops team 6 people, 2 doing data entry, Salesforce+Slack+ERP, 3 data sources, \"one source of truth\" vision."
     },
     "pain_points": {
       "name": "Pain Points",
       "weight": 1,
       "score": 3,
-      "evidence": "Revenue loss from onboarding lag, board deck delays, hiring to solve process problem."
+      "evidence": "$0 revenue lost from 2-week onboarding lag, board deck always late, hiring 2 people for repetitive work."
     },
     "decision_process": {
       "name": "Decision Process",
       "weight": 0.8,
-      "score": 2,
-      "evidence": "Jordan is recommendation + budget authority, CFO needs ROI proof."
+      "score": 3,
+      "evidence": "Jordan recommendation + budget authority, CFO needs ROI proof, ops leads involved in Thursday deep dive."
     },
     "budget_authority": {
       "name": "Budget & Authority",
       "weight": 0.8,
-      "score": 2,
-      "evidence": "CFO skeptical of tools that create more work. No specific budget yet but pressure exists."
+      "score": 3,
+      "evidence": "CFO asking questions, hiring cost as baseline, Q2 pressure. Jordan has authority but needs ROI case."
     },
     "stakes": {
       "name": "Stakes & Urgency",
       "weight": 0.7,
       "score": 3,
-      "evidence": "Q2 POC target, two salaries as operational cost, lost revenue from data gaps."
+      "evidence": "Q2 POC goal, CFO pressure, hiring costs, lost revenue. \"Results in weeks not quarters\" is the bar."
     },
     "competition": {
       "name": "Competitive Landscape",
       "weight": 0.6,
       "score": 3,
-      "evidence": "Zapier outgrown, Workato too expensive. No current vendor. \"Build it yourself\" framing resonates."
+      "evidence": "Zapier outgrown, Workato too expensive, DataSync referral, \"build it yourself\" resonates."
     },
     "next_steps": {
       "name": "Next Steps",
       "weight": 1,
-      "score": 1,
-      "evidence": "Thursday 2pm PT technical deep dive scheduled with ops leads."
+      "score": 3,
+      "evidence": "Thursday 2pm PT deep dive with ops leads. Jordan's hesitation: implementation speed."
     }
   },
-  "showNudge": true,
-  "currentNudge": {
-    "category": "next_steps",
-    "message": "\"What would the ops team's first week with us look like?\"",
-    "rationale": "Jordan's concern is implementation time. Concrete timeline details will help close the CFO ROI question."
-  },
+  "showNudge": null,
+  "currentNudge": null,
   "finalReport": null
 }
