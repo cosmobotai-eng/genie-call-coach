@@ -1,0 +1,117 @@
+{
+  "phase": "live",
+  "meetingTitle": "Jordan Chen — TechFlow Discovery Call",
+  "elapsedMs": 15031,
+  "transcript": [
+    {
+      "id": 1,
+      "speaker": "Jordan",
+      "speakerId": 2,
+      "isHost": true,
+      "email": "jordan.chen@techflow.io",
+      "timestamp": "00:00:00",
+      "text": "Hey Alex, thanks for reaching out. I've been drowning in manual data entry for the past three months, so I'm excited to chat about what you guys do.",
+      "duration": 1800
+    },
+    {
+      "id": 2,
+      "speaker": "Alex",
+      "speakerId": 1,
+      "isHost": false,
+      "email": null,
+      "timestamp": "00:30:00",
+      "text": "Jordan, really appreciate you making time. I saw TechFlow just hit 40 employees — congrats on the growth. So tell me, what's the biggest bottleneck right now when it comes to your data workflows?",
+      "duration": 2500
+    },
+    {
+      "id": 3,
+      "speaker": "Jordan",
+      "speakerId": 2,
+      "isHost": true,
+      "email": "jordan.chen@techflow.io",
+      "timestamp": "01:11:40",
+      "text": "Honestly? Our ops team is spending probably 15 hours a week just copying and pasting between Salesforce, Slack, and our ERP. We hired two people last quarter just to handle the backlog. It's killing us.",
+      "duration": 3200
+    },
+    {
+      "id": 4,
+      "speaker": "Alex",
+      "speakerId": 1,
+      "isHost": false,
+      "email": null,
+      "timestamp": "02:05:00",
+      "text": "That's a classic symptoms of scale. When companies hit your size, the tools that got them there start becoming the bottleneck. So you've got Salesforce, Slack, and your ERP — what does your ops team look like today?",
+      "duration": 2800
+    },
+    {
+      "id": 5,
+      "speaker": "Jordan",
+      "speakerId": 2,
+      "isHost": true,
+      "email": "jordan.chen@techflow.io",
+      "timestamp": "02:51:40",
+      "text": "We've got a core ops team of six people, but two of them are basically just doing data entry. We've talked about hiring one more, but the market for good ops people is tough right now. Plus even if we hire, the problem doesn't really go away, right? We're still doing the same repetitive work.",
+      "duration": 4000
+    },
+    {
+      "id": 6,
+      "speaker": "Alex",
+      "speakerId": 1,
+      "isHost": false,
+      "email": null,
+      "timestamp": "03:58:20",
+      "text": "Exactly right. Hiring to solve a process problem is like buying more chairs when",
+      "duration": 731
+    }
+  ],
+  "analysis": null,
+  "nudgeHistory": [],
+  "overallScore": 0,
+  "categories": {
+    "current_reality": {
+      "name": "Current Reality",
+      "weight": 1,
+      "score": 0,
+      "evidence": []
+    },
+    "pain_points": {
+      "name": "Pain Points",
+      "weight": 1,
+      "score": 0,
+      "evidence": []
+    },
+    "decision_process": {
+      "name": "Decision Process",
+      "weight": 0.8,
+      "score": 0,
+      "evidence": []
+    },
+    "budget_authority": {
+      "name": "Budget & Authority",
+      "weight": 0.8,
+      "score": 0,
+      "evidence": []
+    },
+    "stakes": {
+      "name": "Stakes & Urgency",
+      "weight": 0.7,
+      "score": 0,
+      "evidence": []
+    },
+    "competition": {
+      "name": "Competitive Landscape",
+      "weight": 0.6,
+      "score": 0,
+      "evidence": []
+    },
+    "next_steps": {
+      "name": "Next Steps",
+      "weight": 1,
+      "score": 0,
+      "evidence": []
+    }
+  },
+  "showNudge": false,
+  "currentNudge": null,
+  "finalReport": null
+}

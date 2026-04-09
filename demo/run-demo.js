@@ -201,8 +201,8 @@ function logToConsole(state) {
   console.clear();
   console.log('\n🟢 GENIE CALL COACH — LIVE DEMO');
   console.log('═'.repeat(60));
-  console.log(`  Meeting: ${state.meetingTitle}`);
-  console.log(`  Elapsed: ${time} / 14:00');
+  console.log("  Meeting: " + state.meetingTitle);
+  console.log("  Elapsed: " + time + " / 14:00");
   console.log('═'.repeat(60));
   
   if (state.phase === 'connecting') {
@@ -217,7 +217,8 @@ function logToConsole(state) {
       const catScore = cat.score || 0;
       const catBar = '█'.repeat(catScore) + '░'.repeat(3 - catScore);
       const flag = catScore < 2 ? '⚠️ ' : catScore === 3 ? '✅' : '  ';
-      console.log(`    ${flag} ${cat.name.padEnd(22)} ${catBar} ${cat.evidence ? `— ${cat.evidence.substring(0, 50)}...` : ''}`);
+      const evidenceStr = String(cat.evidence || '');
+      console.log("    " + flag + " " + cat.name.padEnd(22) + " " + catBar + " " + (evidenceStr ? "— " + evidenceStr.substring(0, 50) + "..." : ""));
     }
     
     if (state.showNudge && state.currentNudge) {
