@@ -1,87 +1,127 @@
-# Section Discovery Agent
+# Genie Call Coach — Developer Guide
 
 ## What This Is
 
-Electron desktop app that invisibly monitors sales discovery calls in real-time. Scores transcript coverage against the 7 sections of Section AI's Transformation Brief, shows a live scoreboard during the call, and sends a post-call coverage report via Slack.
+Genie Call Coach is a Mac desktop app that coaches sales reps in real-time during discovery calls. It captures call audio via the Recall.ai Desktop SDK, transcribes via Deepgram, and runs the transcript through an LLM every 90 seconds to score discovery coverage and generate live coaching nudges.
 
-Built on Recall.ai's Desktop SDK (forked from Muesli sample app). No bot joins the call -- the SDK captures audio locally from the meeting window.
+## Key Context
 
-## Architecture
+- **This is a Ben Better company product** — Ben Better is Cap's holding/operating company (Greg Crisci is the partner)
+- **Phase 1 demo is live** — `node demo/run-demo.js` runs the full loop with mock data, no API keys needed
+- **API keys go in `.env`** — never hardcode them. Keys needed: `RECALLAI_API_KEY`, `DEEPGRAM_API_KEY`, `ANTHROPIC_API_KEY`
+- **The Recall API key never touches the Electron app** — it lives in the Express backend (`server.js`), which issues upload tokens to the app
+
+## Architecture Quick Reference
 
 ```
-Meeting starts (Zoom/Teams/Meet)
-  -> Recall Desktop SDK detects meeting window
-  -> SDK captures audio, streams to Deepgram for transcription
-  -> Real-time transcript events flow to main process
-  -> Every 90s: transcript sent to Claude (via CLI) for analysis
-  -> Scoreboard UI updates in Electron app (7 brief sections, color-coded)
-  -> Call ends: final coverage report sent via Slack DM
+Your Mac
+├── Electron App (main.js)
+│   ├── Recall.ai SDK → captures audio
+│   ├── Transcript Buffer (90-second sliding window)
+│   └── IPC → renderer
+│
+└── Express Server (server.js) :13373
+    ├── POST /recording/sdk-upload → issues upload token (API key lives here)
+    ├── GET /brain → semantic search against company's knowledge graph
+    └── CRUD /scorecard, /calls, /users
 ```
 
-## Files
+## Key Files
 
 | File | Purpose |
 |---|---|
-| `src/main.js` | Electron main process: SDK events, analysis loop, IPC |
-| `src/discovery-agent.js` | Core: 7-category checklist prompt, Claude CLI, JSON scoring |
-| `src/slack-notifier.js` | Sgt. Signal Slack DMs (final report only) |
-| `src/server.js` | Express on :13373, creates Recall upload tokens |
-| `src/preload.js` | IPC bridge for renderer |
-| `src/renderer.js` | UI: scoreboard updates from discovery-update events |
-| `src/index.html` | Discovery scoreboard panel HTML |
-| `src/index.css` | Scoreboard styles (bottom of file) |
-| `demo-discovery.js` | Offline demo: runs analysis at 10/20/30 min marks on saved transcript |
-| `patches/` | SDK patches (auto-applied via postinstall) |
+| `src/main.js` | Electron main process. SDK events → analysis loop → IPC to renderer |
+| `src/discovery-agent.js` | **The coaching brain.** Categories, scoring, prompt construction |
+| `src/server.js` | Express backend. Recall token proxy + Brain API |
+| `demo/run-demo.js` | Phase 1 demo runner. Start here to understand the loop |
 
-## SDK Patches
+## How the Coaching Loop Works
 
-The `@recallai/desktop-sdk` native binary is spawned with a stripped environment by default. On macOS, this prevents it from accessing system libraries needed for audio capture. The patch in `patches/` adds `...process.env` to the spawn call. Applied automatically via `patch-package` on `npm install`.
+1. Call starts → `meeting-detected` event from Recall SDK
+2. Audio streams → Recall cloud → Deepgram → `transcript.data` events
+3. Main process accumulates transcript entries into a buffer
+4. Every 90 seconds: buffer → `analyzeDiscoveryCoverage()` → scores + nudge
+5. Renderer receives IPC `discovery-update` → updates scoreboard UI
+6. Call ends: full transcript → `generateFinalReport()` → save + deliver
 
-## Critical Setup Notes
+## Adding a New Scorecard Category
 
-### macOS Permissions (THIS WILL BITE YOU)
-The app runs via Terminal (or iTerm/Warp). On macOS 15+, the **Terminal app itself** needs Screen Recording permission, not just Electron. Without this, the SDK silently fails to record -- no error, just no events.
+The scorecard is just a config object in `discovery-agent.js`:
 
-**System Settings > Privacy & Security > Screen Recording > Terminal (toggle ON)**
-
-The app also calls `requestPermission('screen_capture')` and `requestPermission('system_audio')` on init.
-
-### Deepgram
-Transcription provider configured in Recall's web dashboard, not in code:
-1. Sign up at deepgram.com
-2. Create API key with **Admin role** (not Default)
-3. Paste key + Project ID at https://us-west-2.recall.ai/dashboard/transcription
-
-### Claude CLI
-Analysis uses `claude -p` (Claude Max subscription). No API key needed. Requires `claude` CLI installed on the machine. For production/distribution, swap to `@anthropic-ai/sdk` with an API key.
-
-## Discovery Checklist
-
-The 7 scoring categories map to the 7 sections of Section's Transformation Brief (designed by Scott). Each category includes specific questions from Section's Discovery Questions Reference (analyzed from 4 real calls):
-
-1. **Current Reality** (Brief S1) -- company facts, AI tools, daily usage %, governance, Head of AI
-2. **Market Context** (Brief S2) -- competitor benchmarks, industry AI data
-3. **Their Plan** (Brief S3) -- what they'd do without Section
-4. **Blind Spots** (Brief S4) -- frozen middle, measurement approach, pilot history
-5. **Implications** (Brief S5) -- cost of inaction, timeline pressure, personal stakes
-6. **Recommended Path** (Brief S6) -- budget structure, bandwidth, past vendor failures
-7. **Seller Memo** -- decision process, other AI initiatives, knowledge worker count
-
-## Integration with Brief Generator
-
-This agent is the front half of the pipeline. Scott's 5-pass brief generator (in Google Drive: `1FWeJBbd7d4oIO-gmUydHQAFWjjfruBC2`) is the back half. Our coverage report tells you whether the transcript has enough signal for the generator to produce 8+/10 on all 7 evaluation dimensions.
-
-## Commands
-
-```bash
-npm start              # Run in dev mode (requires Terminal Screen Recording permission)
-npm run demo           # Run offline demo against saved transcript
-npm run make           # Build signed DMG (requires Apple Developer cert)
+```js
+const DEFAULT_CATEGORIES = {
+  my_new_category: {
+    name: 'My Category',
+    description: 'What this measures',
+    weight: 1.0,  // higher = more important
+    key_questions: ['Question 1?', 'Question 2?'],
+  },
+};
 ```
 
-## Conventions
+Then add the scoring logic in `analyzeDiscoveryCoverage()`. The UI picks up new categories automatically.
 
-- LLM calls: `claude -p --model sonnet` via CLI subprocess
-- Slack: Sgt. Signal bot (`SGT_SIGNAL_BOT_TOKEN`), `chat.postMessage` with Block Kit
-- No API keys for Claude -- uses Max subscription via CLI
-- Analysis interval: 90 seconds (first check at 90s after recording starts)
+## Running the Demo
+
+```bash
+# No API keys needed
+node demo/run-demo.js
+
+# Fast (10x speed)
+node demo/run-demo.js --speed=10
+
+# With real LLM (requires .env with keys)
+node demo/run-demo.js --mock-llm=false
+```
+
+## Environment Variables
+
+```bash
+RECALLAI_API_KEY=...       # Recall.ai API key (server.js only)
+DEEPGRAM_API_KEY=...       # Deepgram API key (Recall dashboard config)
+ANTHROPIC_API_KEY=...      # Optional: direct API calls
+LLM_PROVIDER=claude        # 'claude' (CLI) or 'openai'
+ANTHROPIC_MODEL=sonnet     # Model for CLI invocations
+PORT=13373                  # Express server port
+```
+
+## Working with the Recall SDK
+
+The SDK runs in the main process. Key events:
+
+- `meeting-detected` — user started a call
+- `recording-started` — recording has begun
+- `realtime-event: transcript.data` — a finalized transcript segment
+- `realtime-event: transcript.partial_data` — interim results (every few words)
+- `recording-ended` — call finished
+
+The SDK requires macOS permissions: Screen Recording, Accessibility, Microphone.
+
+## The Knowledge Graph (Business Brain)
+
+Each company has a knowledge graph that feeds context into the coaching prompt. The graph is stored in PostgreSQL with `pgvector` for semantic search.
+
+Minimum viable structure:
+- `brain_nodes` — entities (products, competitors, FAQs, processes)
+- `brain_edges` — relationships between entities
+- `companies` — tenant isolation
+
+RLS (Row Level Security) enforces tenant isolation at the database level.
+
+## First Time Setup
+
+```bash
+npm install
+cp .env.example .env
+# Add your API keys to .env
+npm start
+```
+
+The app will request macOS permissions on first run (Screen Recording, Accessibility, Microphone).
+
+## Questions
+
+- **Why Electron?** We need native macOS audio capture. Recall SDK is a Node module. Web app can't do this.
+- **Why Express backend for Recall?** The Recall API key lives server-side. The Electron app gets short-lived upload tokens — it never sees the raw key.
+- **Can this run without Recall?** In demo mode, yes (`demo/run-demo.js`). For real calls, Recall SDK is required for desktop audio capture.
+- **Can I use GPT-4o instead of Claude?** Yes. Set `LLM_PROVIDER=openai` and `OPENAI_API_KEY` in `.env`.
